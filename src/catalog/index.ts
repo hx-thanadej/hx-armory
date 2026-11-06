@@ -2,6 +2,7 @@ import { defineCatalog } from './define';
 import { awsRdsPostgres } from './items/aws-rds-postgres';
 import { awsS3Bucket } from './items/aws-s3-bucket';
 import { awsSqsQueue } from './items/aws-sqs-queue';
+import { helmArgoCd } from './items/helm-argo-cd';
 import { helmClickhouse } from './items/helm-clickhouse';
 import { helmIngressNginx } from './items/helm-ingress-nginx';
 import { helmPostgresql } from './items/helm-postgresql';
@@ -22,6 +23,7 @@ export const catalog = defineCatalog([
   helmRedis,
   helmPostgresql,
   helmClickhouse,
+  helmArgoCd,
   helmIngressNginx,
   k8sNamespace,
   k8sImagePullSecret,
