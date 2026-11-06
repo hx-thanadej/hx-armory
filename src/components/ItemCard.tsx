@@ -1,5 +1,6 @@
 import type { CatalogItem, ParamValue, Values } from '../catalog/types';
 import type { ValidationError } from '../catalog/validate';
+import { KindBadge } from './KindBadge';
 import { ParamField } from './ParamField';
 
 type Props = {
@@ -11,22 +12,23 @@ type Props = {
 };
 
 export function ItemCard({ item, values, errors, onChange, onRemove }: Props) {
+  const titleId = `item-${item.id}`;
   return (
-    <section className="panel card" aria-label={item.name}>
+    <section className={`card kind-edge-${item.kind}`} aria-labelledby={titleId}>
       <header className="card-head">
-        <h3>{item.name}</h3>
-        <span className={`badge badge-${item.kind}`}>{item.kind}</span>
-        <button type="button" className="btn btn-quiet" onClick={onRemove}>
-          Remove
+        <h3 id={titleId}>{item.name}</h3>
+        <KindBadge kind={item.kind} />
+        <button type="button" className="link-button" onClick={onRemove}>
+          Remove<span className="visually-hidden"> {item.name}</span>
         </button>
       </header>
       {errors.filter((error) => error.key === null).map((error) => (
-        <p key={error.message} className="error" role="alert">
+        <p key={error.message} className="field-error">
           {error.message}
         </p>
       ))}
       {item.params.length === 0 ? (
-        <p className="hint">No settings. Uses the shared settings only.</p>
+        <p className="card-note">Nothing to fill in. It uses the shared settings only.</p>
       ) : (
         <div className="fields">
           {item.params.map((param) => (

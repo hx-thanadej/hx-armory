@@ -11,8 +11,11 @@ type Props = {
 
 export function ContextForm({ ctx, errors, onChange }: Props) {
   return (
-    <section className="panel" aria-labelledby="context-title">
-      <h2 id="context-title">Shared settings</h2>
+    <section className="card card-shared" aria-labelledby="context-title">
+      <header className="card-head">
+        <h3 id="context-title">Shared settings</h3>
+      </header>
+      <p className="card-note">Every item below uses these names, so set them once here.</p>
       <div className="fields">
         {contextParams.map((param) => (
           <ParamField

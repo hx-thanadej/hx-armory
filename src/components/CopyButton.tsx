@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { copyText } from '../download';
+import { Icon } from './Icon';
 
 type Status = 'idle' | 'copied' | 'failed';
 
-export function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
+type Props = { text: string; label?: string; describe?: string; className?: string };
+
+export function CopyButton({ text, label = 'Copy', describe, className = 'btn btn-secondary' }: Props) {
   const [status, setStatus] = useState<Status>('idle');
 
   useEffect(() => {
@@ -15,8 +18,10 @@ export function CopyButton({ text, label = 'Copy' }: { text: string; label?: str
   const onClick = async () => setStatus((await copyText(text)) ? 'copied' : 'failed');
 
   return (
-    <button type="button" className="btn" onClick={onClick}>
-      {status === 'copied' ? 'Copied' : status === 'failed' ? 'Copy failed' : label}
+    <button type="button" className={className} data-status={status} onClick={onClick}>
+      <Icon name={status === 'copied' ? 'check' : 'copy'} />
+      <span aria-live="polite">{status === 'copied' ? 'Copied' : status === 'failed' ? 'Copy failed' : label}</span>
+      {describe && status === 'idle' && <span className="visually-hidden"> {describe}</span>}
     </button>
   );
 }

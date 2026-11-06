@@ -1,14 +1,11 @@
 import type { CatalogItem, Kind } from '../catalog/types';
 import type { KindFilter } from '../state';
+import { requiredTools } from '../tools';
+import { Icon } from './Icon';
+import { KindBadge, kindLabel } from './KindBadge';
 
-const kinds: readonly KindFilter[] = ['all', 'terraform', 'helm', 'manifest', 'command'];
-const kindLabel: Record<KindFilter, string> = {
-  all: 'All',
-  terraform: 'Terraform',
-  helm: 'Helm',
-  manifest: 'YAML',
-  command: 'Commands',
-};
+const filters: readonly KindFilter[] = ['all', 'terraform', 'helm', 'manifest', 'command'];
+const filterLabel = (kind: KindFilter) => (kind === 'all' ? 'All' : kindLabel[kind satisfies Kind]);
 
 type Props = {
   items: readonly CatalogItem[];
@@ -32,45 +29,48 @@ export function CatalogList({ items, selectedIds, query, kind, onQuery, onKind, 
   for (const item of visible) groups.set(item.category, [...(groups.get(item.category) ?? []), item]);
 
   return (
-    <nav className="catalog" aria-label="Catalog">
-      <input
-        type="search"
-        className="search"
-        placeholder="Search the catalog"
-        aria-label="Search the catalog"
-        value={query}
-        onChange={(e) => onQuery(e.target.value)}
-      />
-      <div className="chips" role="group" aria-label="Filter by kind">
-        {kinds.map((value) => (
-          <button
-            key={value}
-            type="button"
-            className="chip"
-            aria-pressed={kind === value}
-            onClick={() => onKind(value)}
-          >
-            {kindLabel[value]}
-          </button>
-        ))}
+    <div className="catalog">
+      <div className="filters">
+        <label className="search">
+          <Icon name="search" />
+          <span className="visually-hidden">Search the catalog</span>
+          <input type="search" placeholder="Search by name or description" value={query} onChange={(e) => onQuery(e.target.value)} />
+        </label>
+        <div className="chips" role="group" aria-label="Filter by kind">
+          {filters.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className={`chip chip-${value}`}
+              aria-pressed={kind === value}
+              onClick={() => onKind(value)}
+            >
+              {filterLabel(value)}
+            </button>
+          ))}
+        </div>
       </div>
-      {visible.length === 0 && <p className="hint">Nothing matches.</p>}
+
+      {visible.length === 0 && <p className="empty-note">Nothing matches. Try another word or the All filter.</p>}
+
       {[...groups].map(([category, entries]) => (
         <fieldset key={category} className="group">
           <legend>{category}</legend>
           {entries.map((item) => (
-            <label key={item.id} className="row">
-              <input type="checkbox" checked={selectedIds.has(item.id)} onChange={() => onToggle(item)} />
-              <span className="row-text">
+            <label key={item.id} className={`row kind-edge-${item.kind}`}>
+              <input type="checkbox" className="row-check" checked={selectedIds.has(item.id)} onChange={() => onToggle(item)} />
+              <span className="row-body">
                 <span className="row-title">
-                  {item.name} <span className={`badge badge-${item.kind satisfies Kind}`}>{item.kind}</span>
+                  <span className="row-name">{item.name}</span>
+                  <KindBadge kind={item.kind} />
                 </span>
-                <span className="hint">{item.description}</span>
+                <span className="row-description">{item.description}</span>
+                <span className="row-tools">Needs {requiredTools(item).join(', ') || 'nothing extra'}</span>
               </span>
             </label>
           ))}
         </fieldset>
       ))}
-    </nav>
+    </div>
   );
 }

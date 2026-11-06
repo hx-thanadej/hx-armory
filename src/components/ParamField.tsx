@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import type { Param, ParamValue } from '../catalog/types';
+import { Icon } from './Icon';
 
 type Props = {
   param: Param;
@@ -10,13 +11,18 @@ type Props = {
 
 export function ParamField({ param, value, error, onChange }: Props) {
   const id = useId();
-  const note = param.help ? `${id}-help` : undefined;
-  const common = { id, 'aria-invalid': error ? true : undefined, 'aria-describedby': note };
+  const helpId = param.help ? `${id}-help` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const common = {
+    id,
+    'aria-invalid': error ? true : undefined,
+    'aria-describedby': [errorId, helpId].filter(Boolean).join(' ') || undefined,
+  };
 
   let control;
   switch (param.type) {
     case 'string':
-      control = <input {...common} type="text" value={String(value ?? '')} onChange={(e) => onChange(e.target.value)} />;
+      control = <input {...common} type="text" spellCheck={false} value={String(value ?? '')} onChange={(e) => onChange(e.target.value)} />;
       break;
     case 'number':
       control = (
@@ -50,14 +56,15 @@ export function ParamField({ param, value, error, onChange }: Props) {
     <div className={`field field-${param.type}`}>
       <label htmlFor={id}>{param.label}</label>
       {control}
-      {param.help && (
-        <p className="hint" id={note}>
-          {param.help}
+      {error && (
+        <p className="field-error" id={errorId}>
+          <Icon name="alert" size={16} />
+          {error}
         </p>
       )}
-      {error && (
-        <p className="error" role="alert">
-          {error}
+      {param.help && (
+        <p className="field-help" id={helpId}>
+          {param.help}
         </p>
       )}
     </div>

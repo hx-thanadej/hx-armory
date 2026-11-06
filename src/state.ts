@@ -1,6 +1,7 @@
 import { defaultContext } from './catalog/context';
 import type { CatalogItem, Context, Kind, ParamValue, Values } from './catalog/types';
 import { defaultValues } from './catalog/validate';
+import type { Step } from './steps';
 
 export type Shared = { ctx: Context; selected: Readonly<Record<string, Values>> };
 export type KindFilter = Kind | 'all';
@@ -9,6 +10,7 @@ export type State = Shared & {
   query: string;
   kind: KindFilter;
   activeFile: string | null;
+  step: Step;
 };
 
 export type Action =
@@ -18,6 +20,7 @@ export type Action =
   | { type: 'setQuery'; query: string }
   | { type: 'setKind'; kind: KindFilter }
   | { type: 'openFile'; path: string }
+  | { type: 'goTo'; step: Step }
   | { type: 'load'; shared: Shared };
 
 export const initialState: State = {
@@ -26,6 +29,7 @@ export const initialState: State = {
   query: '',
   kind: 'all',
   activeFile: null,
+  step: 'pick',
 };
 
 export function reducer(state: State, action: Action): State {
@@ -47,6 +51,8 @@ export function reducer(state: State, action: Action): State {
       return { ...state, kind: action.kind };
     case 'openFile':
       return { ...state, activeFile: action.path };
+    case 'goTo':
+      return { ...state, step: action.step };
     case 'load':
       return { ...state, ...action.shared };
   }
