@@ -37,9 +37,12 @@ export function App() {
   const step = resolveStep(state.step, progress);
   const sharedHash = encodeHash(state, catalog);
 
+  // No dependency list on purpose. A pasted step the clamp turns back into the one already shown changes no
+  // dependency, and would otherwise leave the address bar naming a step the page is not on.
   useEffect(() => {
-    history.replaceState(null, '', `#${withStep(sharedHash, step)}`);
-  }, [sharedHash, step]);
+    const wanted = `#${withStep(sharedHash, step)}`;
+    if (location.hash !== wanted) history.replaceState(null, '', wanted);
+  });
 
   useEffect(() => {
     const onHashChange = () => {
