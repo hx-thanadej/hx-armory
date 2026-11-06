@@ -570,6 +570,24 @@ button {
   color: var(--bg);
 }
 
+.chip-count {
+  min-width: 24px;
+  margin-left: 8px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.chip[aria-pressed='true'] .chip-count {
+  background: var(--bg);
+  color: var(--text);
+}
+
 .catalog {
   display: grid;
   gap: 24px;
@@ -599,6 +617,18 @@ button {
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.group-picked {
+  margin-left: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .row {

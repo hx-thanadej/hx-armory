@@ -1,4 +1,5 @@
 import type { CatalogItem, Kind } from '../catalog/types';
+import { outputSummary, pickedSummary, viewCatalog } from '../catalogView';
 import type { KindFilter } from '../state';
 import { requiredTools } from '../tools';
 import { Icon } from './Icon';
@@ -17,16 +18,8 @@ type Props = {
   onToggle: (item: CatalogItem) => void;
 };
 
-const matches = (item: CatalogItem, query: string, kind: KindFilter) => {
-  if (kind !== 'all' && item.kind !== kind) return false;
-  const needle = query.trim().toLowerCase();
-  return !needle || [item.name, item.description, item.id, item.category].some((text) => text.toLowerCase().includes(needle));
-};
-
 export function CatalogList({ items, selectedIds, query, kind, onQuery, onKind, onToggle }: Props) {
-  const visible = items.filter((item) => matches(item, query, kind));
-  const groups = new Map<string, CatalogItem[]>();
-  for (const item of visible) groups.set(item.category, [...(groups.get(item.category) ?? []), item]);
+  const { groups, counts } = viewCatalog(items, query, kind);
 
   return (
     <div className="catalog">
@@ -46,31 +39,40 @@ export function CatalogList({ items, selectedIds, query, kind, onQuery, onKind, 
               onClick={() => onKind(value)}
             >
               {filterLabel(value)}
+              <span className="chip-count">{counts[value]}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {visible.length === 0 && <p className="empty-note">Nothing matches. Try another word or the All filter.</p>}
+      {groups.length === 0 && <p className="empty-note">Nothing matches. Try another word or the All filter.</p>}
 
-      {[...groups].map(([category, entries]) => (
-        <fieldset key={category} className="group">
-          <legend>{category}</legend>
-          {entries.map((item) => (
-            <label key={item.id} className={`row kind-edge-${item.kind}`}>
-              <input type="checkbox" className="row-check" checked={selectedIds.has(item.id)} onChange={() => onToggle(item)} />
-              <span className="row-body">
-                <span className="row-title">
-                  <span className="row-name">{item.name}</span>
-                  <KindBadge kind={item.kind} />
+      {groups.map((group) => {
+        const picked = pickedSummary(group, selectedIds);
+        return (
+          <fieldset key={group.category} className="group">
+            <legend>
+              {group.category}
+              {picked && <span className="group-picked">{picked}</span>}
+            </legend>
+            {group.items.map((item) => (
+              <label key={item.id} className={`row kind-edge-${item.kind}`}>
+                <input type="checkbox" className="row-check" checked={selectedIds.has(item.id)} onChange={() => onToggle(item)} />
+                <span className="row-body">
+                  <span className="row-title">
+                    <span className="row-name">{item.name}</span>
+                    <KindBadge kind={item.kind} />
+                  </span>
+                  <span className="row-description">{item.description}</span>
+                  <span className="row-tools">
+                    Needs {requiredTools(item).join(', ') || 'nothing extra'}. {outputSummary(item)}
+                  </span>
                 </span>
-                <span className="row-description">{item.description}</span>
-                <span className="row-tools">Needs {requiredTools(item).join(', ') || 'nothing extra'}</span>
-              </span>
-            </label>
-          ))}
-        </fieldset>
-      ))}
+              </label>
+            ))}
+          </fieldset>
+        );
+      })}
     </div>
   );
 }
