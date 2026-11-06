@@ -24,3 +24,9 @@ pnpm build      # ได้ dist/ ไปวางบน static host
 ใน template ใช้ `{{key}}` กับ `{{#if key}}...{{/if}}` ได้ ตัวแปรที่มีให้เสมอคือ `project`, `env`, `namespace` และ `dir` (โฟลเดอร์ของ item)
 
 ระบบจะ fail ตั้งแต่ import ถ้า id ซ้ำ, param ชนกับ context key, หรือ param แบบ string ไม่มี `pattern` (ค่าใน URL ต้องไม่หลุดเข้า `deploy.sh` แบบไม่ตรวจ) และเทสต์จะ render ทุก item ด้วยค่า default ให้
+
+## Deploy ขึ้น GitHub Pages
+
+push เข้า `main` แล้ว workflow `.github/workflows/pages.yml` จะรันเทสต์ build และ deploy ให้เอง ใช้ได้ครั้งแรกต้องเปิด Pages ที่ Settings > Pages > Source เลือก **GitHub Actions** (หรือรัน `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`)
+
+เว็บใช้ path แบบ relative และเก็บค่าใน URL hash จึงทำงานได้ทั้งที่ `https://<owner>.github.io/<repo>/` และบน custom domain โดยไม่ต้องตั้งค่าเพิ่ม
