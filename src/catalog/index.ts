@@ -3,6 +3,7 @@ import { awsRdsPostgres } from './items/aws-rds-postgres';
 import { awsS3Bucket } from './items/aws-s3-bucket';
 import { awsSqsQueue } from './items/aws-sqs-queue';
 import { helmIngressNginx } from './items/helm-ingress-nginx';
+import { helmKong } from './items/helm-kong';
 import { helmPostgresql } from './items/helm-postgresql';
 import { helmRedis } from './items/helm-redis';
 import { k8sCronJob } from './items/k8s-cronjob';
@@ -21,6 +22,7 @@ export const catalog = defineCatalog([
   helmRedis,
   helmPostgresql,
   helmIngressNginx,
+  helmKong,
   k8sNamespace,
   k8sImagePullSecret,
   k8sDeployment,
