@@ -1,4 +1,4 @@
-# infra-picker
+# Armory
 
 ## Goal
 

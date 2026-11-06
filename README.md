@@ -1,4 +1,4 @@
-# infra-picker
+# Armory
 
 เว็บให้ developer ติ๊กเลือก Terraform, Helm, Kubernetes YAML หรือคำสั่ง CLI แล้วได้ไฟล์กับคำสั่งไปรันเองทันที ไม่ต้องรอทีมอินฟรา
 

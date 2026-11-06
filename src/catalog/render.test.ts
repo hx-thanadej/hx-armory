@@ -176,7 +176,7 @@ describe('deploy.sh', () => {
       commands: ['echo ran-{{dir}} >> ran.log', 'echo second >> ran.log'],
     };
     const bundle = ok(render([{ itemId: 'hostile', values: {} }], defaultContext, [hostile]));
-    const dir = mkdtempSync(join(tmpdir(), 'infra-picker-'));
+    const dir = mkdtempSync(join(tmpdir(), 'armory-'));
     writeFileSync(join(dir, 'deploy.sh'), bundle.script);
     execFileSync('bash', ['deploy.sh'], { cwd: dir });
     for (const file of bundle.files) expect(readFileSync(join(dir, file.path), 'utf8')).toBe(file.content);

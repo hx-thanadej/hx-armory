@@ -40,7 +40,7 @@ export function App() {
   return (
     <div className="app">
       <header className="top">
-        <h1>Infra Picker</h1>
+        <h1>Armory</h1>
         <p className="hint">Tick what you need and copy the files and commands. Nothing is applied for you.</p>
       </header>
       <main className="layout">
